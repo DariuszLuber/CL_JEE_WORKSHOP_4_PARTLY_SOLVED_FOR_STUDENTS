@@ -35,8 +35,19 @@ class BookDao{
         })
     }
 
+
+    delete(bookId){
+        return new Promise( (resolve, reject) =>{
+            this.restService.delete(bookId, result =>{
+                resolve(result);
+            });
+        })
+
+    }
+
     save(book){
         if(book.id === 0){
+            book.id = undefined;
             return this._addBook(book);
         }else{
             return this._updateBook(book);
@@ -45,10 +56,15 @@ class BookDao{
 
     _addBook(book){
         return new Promise( (resolve, reject) =>{
-            this.restService.addBook(book);
+            this.restService.addBook(book, respBook =>{
+                if(respBook.id){
+                    book.id = respBook.id;
+                    resolve(book);
+                }else{
+                    reject("Save error");
+                }
 
-
-
+            });
         })
     }
 

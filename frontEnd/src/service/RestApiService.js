@@ -26,13 +26,33 @@ class RestApiService {
 
     }
 
-    addBook(book) {
+
+    delete(bookId, callbackfn){
+        if(typeof callbackfn != "function")
+            throw new Error("Wrong callback param");
+
+
+        fetch(this.restUrl+"/books/"+bookId,{
+            method: "Delete"
+        }).then( response =>{
+            if(response.ok && response.status === 204){
+                callbackfn(true);
+            }else{
+                callbackfn(false);
+            }
+
+        }).catch( e => {
+            throw new Error(e);
+        });
+    }
+
+    addBook(book, callbackfn) {
         fetch(this.restUrl + "/books", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(book)
+            body: book.json()
         })
         .then(response => {
             if (response.ok) {
@@ -41,8 +61,9 @@ class RestApiService {
                 throw new Error("Get Books error");
             }
         })
-        .then(book => {
-            console.log(book);
+        .then(respBook => {
+            if(typeof callbackfn === 'function')
+                callbackfn(respBook);
         })
         .catch(error => {
             throw error;

@@ -59,4 +59,21 @@ class Book{
     set type(value) {
         this._type = value;
     }
+
+
+    json(){
+        let obj = {
+            id: this.id,
+            isbn: this.isbn,
+            title: this.title,
+            author: this.author,
+            publisher: this.publisher,
+            type: this.type
+        }
+
+        return JSON.stringify(obj);
+    }
+
+
+
 }
